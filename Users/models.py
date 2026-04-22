@@ -6,7 +6,7 @@ class User(AbstractUser):
     class Roles(models.TextChoices):
         DOCTOR="DOCTOR","Doctor"
         PATIENT="PATIENT","Patient"
-    role=models.CharField(choices=Roles.choices,default='PATIENT')
+    role=models.CharField(choices=Roles.choices)
 
 class Gender(models.TextChoices):
         MALE="MALE","Male"

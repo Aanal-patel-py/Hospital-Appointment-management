@@ -13,11 +13,37 @@ class RegisterSerializer(serializers.ModelSerializer):
             'password':{'write_only': True}
         }
 
+    def validate(self,data):
+        role=data.get('role')
+        request_data=self.initial_data
+        if role=='DOCTOR':
+            required_fields= ['name',
+                'years_of_experience',
+                'gender',
+                'phonenumber']
+        elif role== 'PATIENT':
+            required_fields=['name',
+                'age',
+                'bloodgroup',
+                'gender',
+                'phonenumber',
+                'height',
+                'weight',
+                'city',]
+        else:
+            raise serializers.ValidationError("invalid role")
+        
+        for fields in required_fields:
+            if fields not in request_data:
+                raise f"error not enough fields present"
+        return data
+
     def create(self,validated_data):
         request_data=self.initial_data
         role=validated_data.get('role')
-        user_data=validated_data.get('username','password','role')
-        user=User.objects.create_user(user_data)
+        user_name=validated_data.get('username')
+        user_password=validated_data.get('password')
+        user=User.objects.create_user(user_name,password=user_password,role=role)
 
         if role=='DOCTOR':
             print(validated_data)
