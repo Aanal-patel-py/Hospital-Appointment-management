@@ -19,6 +19,9 @@ class Specializations(models.TextChoices):
 class Specialization(models.Model):
      
     type=models.CharField(choices=Specializations.choices, unique=True,max_length=30)
+
+    def __str__(self):
+        return f"{self.type}" 
     
 class Doctor(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE, related_name='doctor_profile')
@@ -28,6 +31,7 @@ class Doctor(models.Model):
     is_verified=models.BooleanField(default=False)
     phonenumber=PhoneNumberField(max_length=10)
     gender=models.CharField(choices=Gender.choices)
+    
 
 class Patient(models.Model):
     
