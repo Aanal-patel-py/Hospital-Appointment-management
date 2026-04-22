@@ -29,7 +29,7 @@ class Doctor(models.Model):
     specialization=models.ManyToManyField(Specialization)
     years_of_experience=models.IntegerField()
     is_verified=models.BooleanField(default=False)
-    phonenumber=PhoneNumberField(max_length=10)
+    phonenumber=PhoneNumberField()
     gender=models.CharField(choices=Gender.choices,max_length=6)
     
 
@@ -40,7 +40,7 @@ class Patient(models.Model):
     age=models.IntegerField()
     bloodgroup=models.CharField(max_length=3)
     gender=models.CharField(choices=Gender.choices, max_length=6)
-    phonenumber=PhoneNumberField(max_length=10)
+    phonenumber=PhoneNumberField()
     height=models.DecimalField(decimal_places=2,max_digits=6)
     weight=models.DecimalField(decimal_places=2,max_digits=6)
     city=models.CharField(max_length=30)
