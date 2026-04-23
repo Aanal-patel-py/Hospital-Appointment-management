@@ -5,7 +5,6 @@ from rest_framework import authentication, permissions
 from django.contrib.auth import get_user_model
 from Users.serializer import RegisterSerializer,PatientProfileSerializer,DoctorProfileSerializer
 
-
 class RegisterView(APIView):
     def post(self,request):
         serializer=RegisterSerializer(data=request.data)
@@ -18,6 +17,8 @@ class RegisterView(APIView):
         
         
 class MeView(APIView):
+    permission_classes=[permissions.IsAuthenticated]
+
     def get(self,request):
         role=self.request.user.role
         serializer=None
@@ -28,7 +29,7 @@ class MeView(APIView):
             user=request.user.doctor_profile
             serializer=DoctorProfileSerializer(user)
         else:
-            pass
+            return Response({"detail": "Invalid role"}, status=400)
         return Response(serializer.data,status=200)
     
 
