@@ -8,7 +8,7 @@ from django.contrib.auth.admin import UserAdmin
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    list_display=('username','email','role')
+    list_display=('id','username','email','role')
 
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):

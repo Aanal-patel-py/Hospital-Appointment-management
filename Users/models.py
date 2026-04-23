@@ -32,6 +32,7 @@ class Doctor(models.Model):
     is_verified=models.BooleanField(default=False)
     phonenumber=PhoneNumberField()
     gender=models.CharField(choices=Gender.choices,max_length=6)
+
     
 
 class Patient(models.Model):

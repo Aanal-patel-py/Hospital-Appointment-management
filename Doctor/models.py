@@ -13,6 +13,9 @@ class DoctorSchedule(models.Model):
     class Meta:
         unique_together=('doctor','start_date','end_date')
 
+    def __str__(self):
+        return f"{self.doctor.name}"
+
 class slot_avaibility(models.Model):
     doctor= models.ForeignKey(Doctor,on_delete=models.CASCADE)
     date=models.DateField(auto_now=False, auto_now_add=False)
