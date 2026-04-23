@@ -76,3 +76,18 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 # class DoctorSerializer(serializers.ModelSerializer):
 # class PatientSerializer(serializers.ModelSerializer):
+
+class PatientProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Patient
+        fields='__all__'
+
+class DoctorProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Doctor
+        fields='__all__'
+        extra_kwargs={
+            'is_verified':{'read_only': True}
+        }
