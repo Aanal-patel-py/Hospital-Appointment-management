@@ -14,4 +14,4 @@ class ScheduleSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("starttime should not be greater than endtime")
         if request_data.get('start_date')>request_data.get('end_date'):
             raise serializers.ValidationError("startdate should not be greater than enddate")
-        return dat
+        return data
