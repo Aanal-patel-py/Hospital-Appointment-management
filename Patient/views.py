@@ -5,8 +5,12 @@ from rest_framework.generics import ListAPIView
 from Doctor.models import slot_avaibility
 from rest_framework.decorators import api_view
 from Users.models import Doctor
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsPatientUser
 
 class SlotViewSet(ModelViewSet):
+    permission_classes=[IsAuthenticated,IsPatientUser]
+    
     queryset=slot_avaibility.objects.all()
     serializer_class=SlotAvailabilitySerializer
 
