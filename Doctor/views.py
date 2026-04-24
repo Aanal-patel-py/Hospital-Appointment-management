@@ -7,9 +7,10 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view,action
 from .services.schedule_service import generate_slots_for_schedule
+from .permissions import IsDoctorUser
 
 class MakeScheduleViewSet(ModelViewSet):
-    permission_classes=[permissions.IsAuthenticated]
+    permission_classes=[permissions.IsAuthenticated,IsDoctorUser]
     serializer_class=ScheduleSerializer
     queryset=DoctorSchedule.objects.all()
 
@@ -29,12 +30,6 @@ class MakeScheduleViewSet(ModelViewSet):
     #         return ScheduleSerializer
 
 
-    # def create(self, request):
-
-    #     serializer=self.get_serializer_class()
-    
-       
-    #     return Response(serializer.errors,status=400)
 
 
     
