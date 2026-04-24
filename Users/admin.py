@@ -15,7 +15,7 @@ class DoctorAdmin(admin.ModelAdmin):
     def get_specializations(self, obj):
         return ", ".join([s.type for s in obj.specialization.all()])
     
-    list_display=('name','get_specializations','years_of_experience','is_verified','phonenumber','gender')
+    list_display=('id', 'name','get_specializations','years_of_experience','is_verified','phonenumber','gender')
     list_filter=('specialization','gender')
 
 

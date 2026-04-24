@@ -4,9 +4,13 @@ from .serializer import ScheduleSerializer
 from rest_framework.response import Response
 from .models import DoctorSchedule,Doctor
 from rest_framework import permissions
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view,action
+from .services.schedule_service import generate_slots_for_schedule
+from .permissions import IsDoctorUser
 
 class MakeScheduleViewSet(ModelViewSet):
-    permission_classes=[permissions.IsAuthenticated]
+    permission_classes=[permissions.IsAuthenticated,IsDoctorUser]
     serializer_class=ScheduleSerializer
     queryset=DoctorSchedule.objects.all()
 
@@ -15,18 +19,22 @@ class MakeScheduleViewSet(ModelViewSet):
         user = self.request.user
         doctor_instance = Doctor.objects.get(user=user)
         serializer.save(doctor=doctor_instance)
-
+   
+        # doc_id=self.request.data.get('doctor')
+        result=generate_slots_for_schedule(doctor_instance)
+        print(user)
+        return Response(result)
 
     # def get_serializer_class(self):
     #     if self.action == 'create':
     #         return ScheduleSerializer
 
 
-    # def create(self, request):
 
-    #     serializer=self.get_serializer_class()
+
     
-       
-    #     return Response(serializer.errors,status=400)
 
-        
+
+
+
+
