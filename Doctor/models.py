@@ -7,7 +7,7 @@ class DoctorSchedule(models.Model):
     start_date=models.DateField(auto_now=False, auto_now_add=False)
     end_date=models.DateField(auto_now=False, auto_now_add=False)
     start_time=models.TimeField(verbose_name='starttime',default=time(10,0))
-    end_time=models.TimeField(verbose_name='endtime',default=time(6,0))
+    end_time=models.TimeField(verbose_name='endtime')
     slot_duration=models.IntegerField()
 
     class Meta:
