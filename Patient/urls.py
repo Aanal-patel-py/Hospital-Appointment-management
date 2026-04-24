@@ -1,12 +1,12 @@
+
 from rest_framework.routers import DefaultRouter
-from .views import MakeScheduleViewSet
+from .views import SlotViewSet,DoctorListAPIView
 from django.urls import path, include
 
 router=DefaultRouter()
-router.register('doctor-schedule',MakeScheduleViewSet)
+router.register('doctor-slots',SlotViewSet)
 
 urlpatterns = [
     path('',include(router.urls)),
-    # path('test/',testView),
+    path('doctor/list',DoctorListAPIView().as_view()),
 ]
-

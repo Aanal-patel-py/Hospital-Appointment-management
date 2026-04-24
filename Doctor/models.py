@@ -23,4 +23,7 @@ class slot_avaibility(models.Model):
     end_time=models.TimeField(verbose_name='endtime')
     is_booked=models.BooleanField()
 
+    def __str__(self):
+        return f"{self.doctor.name}"
+
 

@@ -23,3 +23,4 @@ class ScheduleSerializer(serializers.ModelSerializer):
         if (enddate-startdate).days >7:
             raise serializers.ValidationError("you can select the range of 7 days only")
         return data
+
