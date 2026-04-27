@@ -3,7 +3,7 @@ from .views import MakeScheduleViewSet
 from django.urls import path, include
 
 router=DefaultRouter()
-router.register('doctor',MakeScheduleViewSet)
+router.register('doctor-schedule',MakeScheduleViewSet)
 
 urlpatterns = [
     path('',include(router.urls)),
