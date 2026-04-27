@@ -1,6 +1,7 @@
 
 
-from .views import SlotAPIView,DoctorListAPIView,BookSlotAPIView
+from .views import SlotAPIView,DoctorListAPIView
+from Appointments.views import BookSlotAPIView
 from django.urls import path, include
 
 

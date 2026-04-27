@@ -28,20 +28,3 @@ class DoctorListAPIView(ListAPIView):
     serializer_class=DoctorListSerializer
     queryset=Doctor.objects.all()
     
-class BookSlotAPIView(APIView):
-
-    permission_classes = [IsAuthenticated,IsPatientUser]
-
-    def patch(self, request, slot_id):
-
-        try:
-            slot = slot_availability.objects.get(
-                id=slot_id
-            )
-        except slot_availability.DoesNotExist:
-            return Response({"error":"Slot not found"},status=404)
-        if slot.is_booked:
-            return Response({"error":"Already booked"},status=400)
-        slot.is_booked = True
-        slot.save()
-        return Response({"message":"Appointment booked"},status=200)
