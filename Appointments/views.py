@@ -6,8 +6,14 @@ from Appointments.models import Appointment
 from Patient.permissions import IsPatientUser
 from rest_framework.permissions import IsAuthenticated
 from Appointments.serializer import AppointmentSerializer
+from Doctor.permissions import IsDoctorUser
+from Appointments.models import AppointmentStatus
 class BookSlotAPIView(APIView):
-    permission_classes=[IsAuthenticated,IsPatientUser]
+
+    def get_permissions(self):
+        if self.request.method == 'PATCH':
+            return [IsAuthenticated(), IsPatientUser()]
+        return [IsAuthenticated()]
 
     def get(self,request):
         user=request.user
@@ -42,3 +48,35 @@ class BookSlotAPIView(APIView):
 
         except slot_availability.DoesNotExist:
             return Response({"error":"Slot not found"},status=404)
+        
+class ConfirmAppointmentAPIView(APIView):
+    permission_classes=[IsAuthenticated,IsDoctorUser]
+
+    def patch(self,request,appointment_id):
+        doctor=request.user.doctor_profile
+        appointment=Appointment.objects.get(id=appointment_id,doctor=doctor)
+
+        appointment.status=AppointmentStatus.CONFIRMED
+        appointment.save()
+
+        return Response(
+            {"message":"Appointment confirmed"}
+        )
+    
+class RejectAppointmentAPIView(APIView):
+    permission_classes=[IsAuthenticated,IsDoctorUser]
+
+    def patch(self,request,appointment_id):
+        doctor=request.user.doctor_profile
+
+        with transaction.atomic():
+            appt=Appointment.objects.select_for_update().get(id=appointment_id,doctor=doctor)
+            appt.status=AppointmentStatus.REJECTED
+            appt.save()
+
+            appt.slot.is_booked=False
+            appt.slot.save()
+
+        return Response(
+            {"message":"Appointment rejected"}
+        )
