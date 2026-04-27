@@ -7,6 +7,7 @@ class User(AbstractUser):
         DOCTOR="DOCTOR","Doctor"
         PATIENT="PATIENT","Patient"
     role=models.CharField(choices=Roles.choices)
+    email=models.EmailField()
 
 class Gender(models.TextChoices):
         MALE="MALE","Male"
@@ -31,6 +32,7 @@ class Doctor(models.Model):
     is_verified=models.BooleanField(default=False)
     phonenumber=PhoneNumberField()
     gender=models.CharField(choices=Gender.choices,max_length=6)
+
     
 
 class Patient(models.Model):

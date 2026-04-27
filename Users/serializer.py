@@ -35,7 +35,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         
         for fields in required_fields:
             if fields not in request_data:
-                raise f"error not enough fields present"
+                raise serializers.ValidationError("some fields are not given")
         return data
 
     def create(self,validated_data):
@@ -72,11 +72,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         return user
     
-# class UserSerializer(serializers.ModelSerializer):
-
-# class DoctorSerializer(serializers.ModelSerializer):
-# class PatientSerializer(serializers.ModelSerializer):
-
 class PatientProfileSerializer(serializers.ModelSerializer):
 
     class Meta:

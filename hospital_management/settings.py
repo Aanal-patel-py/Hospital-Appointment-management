@@ -12,8 +12,15 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+from datetime import timedelta
+from pathlib import Path
+import environ
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+env = environ.Env()
+
+environ.Env.read_env(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -40,6 +47,8 @@ INSTALLED_APPS = [
     "rest_framework",
     'Users',
     'rest_framework_simplejwt.token_blacklist',
+    'Doctor',
+    'Patient'
 ]
 
 MIDDLEWARE = [
@@ -78,11 +87,11 @@ WSGI_APPLICATION = 'hospital_management.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'DRF_project',
-        'USER': 'project_user',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
 
@@ -135,4 +144,11 @@ REST_FRAMEWORK = {
          
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
+}
+SIMPLE_JWT={
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": False,
 }
