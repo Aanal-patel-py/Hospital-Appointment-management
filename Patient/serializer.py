@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from Users.models import Doctor
-from Doctor.models import slot_avaibility
+from Doctor.models import slot_availability
 from rest_framework.serializers import ModelSerializer
 
 class SlotAvailabilitySerializer(serializers.ModelSerializer):
@@ -9,7 +9,7 @@ class SlotAvailabilitySerializer(serializers.ModelSerializer):
         slug_field='name' 
     )
     class Meta:
-        model=slot_avaibility
+        model=slot_availability
         fields='__all__'
         read_only_fields=['doctor','date']
    

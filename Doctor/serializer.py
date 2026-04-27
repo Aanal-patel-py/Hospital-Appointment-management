@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import DoctorSchedule,slot_avaibility
+from .models import DoctorSchedule,slot_availability
 from Doctor.models import Doctor
 from datetime import datetime,date
 from rest_framework.validators import UniqueTogetherValidator

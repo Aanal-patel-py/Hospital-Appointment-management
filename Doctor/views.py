@@ -17,11 +17,11 @@ class MakeScheduleViewSet(ModelViewSet):
     def perform_create(self, serializer): # NEEDS TO BE OVERWRIDDEN AS WE NEED TO GET THE DOCTOR OBJECT AND SAVE ITS INSTANCE
   
         user = self.request.user
-        doctor_instance = Doctor.objects.get(user=user)
-        serializer.save(doctor=doctor_instance)
-   
+        schedule = Doctor.objects.get(user=user)
+        serializer.save(doctor=schedule)
+
         # doc_id=self.request.data.get('doctor')
-        generate_slots_for_schedule(doctor_instance)
+        generate_slots_for_schedule(schedule)
         # print(user)
         # return Response(result)
 

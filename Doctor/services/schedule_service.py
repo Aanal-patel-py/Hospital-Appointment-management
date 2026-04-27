@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from django.core.exceptions import ValidationError
-from Doctor.models import DoctorSchedule, slot_avaibility
+from Doctor.models import DoctorSchedule, slot_availability
 
 
 def add_minutes_to_time(t, m, date):
@@ -38,8 +38,8 @@ def generate_slots_for_schedule(doctor_instance):
                 if slot_end > end_time:
                     break
                 slots.append(
-                    slot_avaibility(
-                        doctor=doctor,
+                    slot_availability(
+                        schedule=schedule,
                         date=current_date,
                         start_time=current_time,
                         end_time=slot_end,
@@ -49,5 +49,5 @@ def generate_slots_for_schedule(doctor_instance):
                 current_time = slot_end
             current_date += timedelta(days=1)
 
-    slot_avaibility.objects.bulk_create(slots)
+    slot_availability.objects.bulk_create(slots)
     return {"message": "Slots generated", "count": len(slots)}
