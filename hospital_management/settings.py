@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'Doctor',
     'Patient',
     'Appointments',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -153,3 +154,6 @@ SIMPLE_JWT={
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
 }
+CELERY_BROKER_URL = "redis://default:lRofyPVs30ju1KYdcQeN1IGMNHU2yIqf@redis-18062.crce182.ap-south-1-1.ec2.cloud.redislabs.com:18062/0"
+
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
