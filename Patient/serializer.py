@@ -25,6 +25,3 @@ class DoctorListSerializer(serializers.ModelSerializer):
         exclude=['user']
         read_only_fields=['name','specialization','years_of_experience','is_verfied','phonenumber','gender']
         
-
-
-    
