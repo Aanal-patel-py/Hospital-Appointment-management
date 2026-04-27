@@ -5,7 +5,6 @@ from Appointments.views import BookSlotAPIView
 from django.urls import path, include
 
 
-
 urlpatterns = [
     path("appointments/",BookSlotAPIView.as_view()),
     path("appointments/<int:slot_id>/book/",BookSlotAPIView.as_view()),

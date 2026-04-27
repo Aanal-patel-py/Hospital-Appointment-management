@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from Appointments.serializer import AppointmentSerializer
 from Doctor.permissions import IsDoctorUser
 from Appointments.models import AppointmentStatus
-from .tasks import send_email_task
+# from .tasks import send_email_task
 
 class BookSlotAPIView(APIView):
 
@@ -45,7 +45,7 @@ class BookSlotAPIView(APIView):
                 slot.save()
 
                 appointment=Appointment.objects.create(patient=patient,doctor=slot.schedule.doctor,slot=slot,status=AppointmentStatus.PENDING)
-                send_email_task.delay('Appointment sent for Confirmation','your appointment has been sent to the doctor please wait for it to be confirmed',['aanal.patel@simformsolutions.com'])
+                # send_email_task.delay('Appointment sent for Confirmation','your appointment has been sent to the doctor please wait for it to be confirmed',['aanal.patel@simformsolutions.com'])
 
                 return Response({"message":"Appointment booked successfully","appointment_id":appointment.id},status=201)
 
@@ -61,7 +61,7 @@ class ConfirmAppointmentAPIView(APIView):
 
         appointment.status=AppointmentStatus.CONFIRMED
         appointment.save()
-        send_email_task.delay('Appointment Confirmed','your appointment has been confirmed for the respective slot you created',['aanal.patel@simformsolutions.com'])
+        # send_email_task.delay('Appointment Confirmed','your appointment has been confirmed for the respective slot you created',['aanal.patel@simformsolutions.com'])
 
         return Response(
             {"message":"Appointment confirmed"}
@@ -80,7 +80,7 @@ class RejectAppointmentAPIView(APIView):
 
             appt.slot.is_booked=False
             appt.slot.save()
-            send_email_task.delay('Appointment Rejected','your appointment has been Rejected , try another slot timing',['aanal.patel@simformsolutions.com'])
+            # send_email_task.delay('Appointment Rejected','your appointment has been Rejected , try another slot timing',['aanal.patel@simformsolutions.com'])
 
 
         return Response(
