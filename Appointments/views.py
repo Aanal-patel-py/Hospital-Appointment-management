@@ -5,9 +5,25 @@ from Doctor.models import slot_availability
 from Appointments.models import Appointment
 from Patient.permissions import IsPatientUser
 from rest_framework.permissions import IsAuthenticated
-
+from Appointments.serializer import AppointmentSerializer
 class BookSlotAPIView(APIView):
     permission_classes=[IsAuthenticated,IsPatientUser]
+
+    def get(self,request):
+        user=request.user
+
+        if user.role=="PATIENT":
+            qs=Appointment.objects.filter(patient=user.patient_profile)
+
+        elif user.role=="DOCTOR":
+            qs=Appointment.objects.filter(doctor=user.doctor_profile)
+
+        else:
+            return Response({"error":"Invalid role"},status=403)
+
+        qs=qs.select_related("patient","doctor","slot").order_by("-booked_at")
+        serializer=AppointmentSerializer(qs,many=True)  
+        return Response(serializer.data)
 
     def patch(self,request,slot_id):
         patient=request.user.patient_profile
