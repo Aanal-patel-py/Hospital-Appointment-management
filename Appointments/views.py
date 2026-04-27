@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from Appointments.serializer import AppointmentSerializer
 from Doctor.permissions import IsDoctorUser
 from Appointments.models import AppointmentStatus
+
 class BookSlotAPIView(APIView):
 
     def get_permissions(self):
@@ -42,7 +43,7 @@ class BookSlotAPIView(APIView):
                 slot.is_booked=True
                 slot.save()
 
-                appointment=Appointment.objects.create(patient=patient,doctor=slot.schedule.doctor,slot=slot,status=Appointment.AppointmentStatus.PENDING)
+                appointment=Appointment.objects.create(patient=patient,doctor=slot.schedule.doctor,slot=slot,status=AppointmentStatus.PENDING)
 
                 return Response({"message":"Appointment booked successfully","appointment_id":appointment.id},status=201)
 
@@ -71,7 +72,7 @@ class RejectAppointmentAPIView(APIView):
 
         with transaction.atomic():
             appt=Appointment.objects.select_for_update().get(id=appointment_id,doctor=doctor)
-            appt.status=AppointmentStatus.REJECTED
+            appt.status=AppointmentStatus.CANCELLED
             appt.save()
 
             appt.slot.is_booked=False

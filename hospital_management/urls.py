@@ -18,5 +18,6 @@ urlpatterns = [
     path('api/token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
     path('',include('Users.urls')),
     path('',include('Doctor.urls')),
-    path('',include('Patient.urls'))
-]
+    path('',include('Patient.urls')),
+    path('',include('Appointments.urls')),
+    ]
