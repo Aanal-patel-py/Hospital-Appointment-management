@@ -8,7 +8,7 @@ from Users.models import Doctor
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsPatientUser
 
-class SlotViewSet(ModelViewSet):
+class SlotAPIView(ListAPIView):
     permission_classes=[IsAuthenticated,IsPatientUser]
 
     queryset=slot_availability.objects.all()
@@ -16,12 +16,10 @@ class SlotViewSet(ModelViewSet):
 
     def get_queryset(self):
 
-        queryset = slot_availability.objects.all()
-
-        doctor_id = self.request.query_params.get('doctor')
+        doctor_id = self.kwargs["doctor_id"]
         if doctor_id is not None:
-  
-            queryset = queryset.filter(doctor_id=doctor_id,is_booked=False)
+            queryset = slot_availability.objects.filter(schedule__doctor_id=doctor_id,is_booked=False).select_related("schedule","schedule__doctor").order_by('date','start_time')
+
         return queryset
 
 

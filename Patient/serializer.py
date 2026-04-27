@@ -4,14 +4,14 @@ from Doctor.models import slot_availability
 from rest_framework.serializers import ModelSerializer
 
 class SlotAvailabilitySerializer(serializers.ModelSerializer):
-    doctor = serializers.SlugRelatedField(
+    doctor = serializers.CharField(
         read_only=True,
-        slug_field='name' 
+        source="schedule.doctor.name", 
     )
     class Meta:
         model=slot_availability
-        fields='__all__'
-        read_only_fields=['doctor','date']
+        exclude=['schedule']
+        read_only_fields=['doctor','date','start_time','end_time']
    
 
 class DoctorListSerializer(serializers.ModelSerializer):
