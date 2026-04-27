@@ -157,3 +157,14 @@ SIMPLE_JWT={
 CELERY_BROKER_URL = "redis://default:lRofyPVs30ju1KYdcQeN1IGMNHU2yIqf@redis-18062.crce182.ap-south-1-1.ec2.cloud.redislabs.com:18062/0"
 
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = "mokshit.simform@gmail.com"
+EMAIL_HOST_PASSWORD = "hvitbjxqrnlkotlm" 
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
