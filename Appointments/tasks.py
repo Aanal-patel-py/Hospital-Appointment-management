@@ -12,6 +12,7 @@ def send_email_task(subject,message,recipient_list):
         recipient_list=recipient_list,
         fail_silently=False,
     )
+    print("email sent")
 
 #for celery-beat
 # schedule, _ = IntervalSchedule.objects.get_or_create(every=5,period=IntervalSchedule.MINUTES,)
