@@ -7,4 +7,16 @@ class IsDoctorUser(BasePermission):
 
     def has_permission(self, request, view):
     
-        return bool(request.user and request.user.is_authenticated and request.user.role=='DOCTOR' and request.user.doctor_profile.is_verified==True)
+        if not request.user or not request.user.is_authenticated:
+            self.message = "Authentication required"
+            return False
+
+        if request.user.role != "DOCTOR":
+            self.message = "Only doctors can perform this action"
+            return False
+
+        if not request.user.doctor_profile.is_verified:
+            self.message = "Your doctor account is not verified yet"
+            return False
+
+        return True

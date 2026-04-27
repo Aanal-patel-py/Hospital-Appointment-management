@@ -21,9 +21,9 @@ class MakeScheduleViewSet(ModelViewSet):
         serializer.save(doctor=doctor_instance)
    
         # doc_id=self.request.data.get('doctor')
-        result=generate_slots_for_schedule(doctor_instance)
-        print(user)
-        return Response(result)
+        generate_slots_for_schedule(doctor_instance)
+        # print(user)
+        # return Response(result)
 
     # def get_serializer_class(self):
     #     if self.action == 'create':
