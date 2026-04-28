@@ -28,14 +28,12 @@ form.addEventListener('submit', async function (e) {
 
             const text = await response.text();
 
-            let result;
-            try {
-                result = JSON.parse(text);
-                console.log(result)
-            } catch {
-                console.error("Non-JSON response:", text);
-                return;
+            if (response.ok) {
+            window.location.href = 'dashboard.html'; 
+           
             }
+            
+        
 
         } catch (error) {
             console.error("FETCH ERROR:", error);
