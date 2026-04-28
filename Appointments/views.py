@@ -55,7 +55,7 @@ class BookSlotAPIView(APIView):
 
                 # send_email_task.delay('Appointment request',message_body,[email])
 
-                return Response({"message":"Appointment request has been sent to the doctor , please wait for confirmation","appointment_id":appointment.id},status=201)
+                return Response({"message":"Appointment request has been sent to the doctor , please wait for confirmation email","appointment_id":appointment.id},status=201)
 
         except slot_availability.DoesNotExist:
             return Response({"error":"Slot not found"},status=404)
