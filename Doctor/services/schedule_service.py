@@ -51,3 +51,91 @@ def generate_slots_for_schedule(doctor_instance):
 
     slot_availability.objects.bulk_create(slots)
     return {"message": "Slots generated", "count": len(slots)}
+
+
+
+
+
+
+# from datetime import datetime, timedelta
+# from django.core.exceptions import ValidationError
+# from Doctor.models import slot_availability
+
+
+# def add_minutes_to_time(t, m, date):
+#     return (
+#         datetime.combine(date, t)
+#         + timedelta(minutes=m)
+#     ).time()
+
+
+# def generate_slots_for_schedule(schedule):
+#     """
+#     Generates slots only for ONE schedule.
+#     Prevent duplicate generation.
+#     """
+
+#     if not schedule:
+#         raise ValidationError(
+#             "No schedule provided"
+#         )
+
+#     if schedule.start_date > schedule.end_date:
+#         raise ValidationError(
+#             "start_date must be <= end_date"
+#         )
+
+#     if schedule.start_time >= schedule.end_time:
+#         raise ValidationError(
+#             "start_time must be < end_time"
+#         )
+
+#     # duplicate protection
+#     if schedule.slots.exists():
+#         return {
+#             "message":"Slots already exist",
+#             "count": schedule.slots.count()
+#         }
+
+#     slots = []
+
+#     current_date = schedule.start_date
+
+#     while current_date <= schedule.end_date:
+
+#         current_time = schedule.start_time
+
+#         while current_time < schedule.end_time:
+
+#             slot_end = add_minutes_to_time(
+#                 current_time,
+#                 schedule.slot_duration,
+#                 current_date
+#             )
+
+#             if slot_end > schedule.end_time:
+#                 break
+
+#             slots.append(
+#                 slot_availability(
+#                     schedule=schedule,
+#                     date=current_date,
+#                     start_time=current_time,
+#                     end_time=slot_end,
+#                     is_booked=False
+#                 )
+#             )
+
+#             current_time = slot_end
+
+#         current_date += timedelta(days=1)
+
+#     slot_availability.objects.bulk_create(
+#         slots,
+#         ignore_conflicts=True
+#     )
+
+#     return {
+#         "message":"Slots generated",
+#         "count":len(slots)
+#     }
