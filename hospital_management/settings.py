@@ -51,9 +51,11 @@ INSTALLED_APPS = [
     'Patient',
     'Appointments',
     'django_celery_beat',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -145,7 +147,8 @@ REST_FRAMEWORK = {
      'DEFAULT_AUTHENTICATION_CLASSES': (
          
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    
 }
 SIMPLE_JWT={
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=50),
@@ -168,3 +171,5 @@ EMAIL_HOST_USER = "mokshit.simform@gmail.com"
 EMAIL_HOST_PASSWORD = "hvitbjxqrnlkotlm" 
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+CORS_ALLOW_ALL_ORIGINS = True
