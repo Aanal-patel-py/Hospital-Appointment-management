@@ -7,10 +7,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=User
-        fields=['username','password','role']
+        fields=['username','password','role','email']
 
         extra_kwargs={
-            'password':{'write_only': True}
+            'password':{'write_only': True},
+            'email':{'required': True}
         }
 
     def validate(self,data):
@@ -43,7 +44,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         role=validated_data.get('role')
         user_name=validated_data.get('username')
         user_password=validated_data.get('password')
-        user=User.objects.create_user(user_name,password=user_password,role=role)
+        email=validated_data.get('email')
+        user=User.objects.create_user(user_name,password=user_password,role=role,email=email)
 
         if role=='DOCTOR':
             print(validated_data)
