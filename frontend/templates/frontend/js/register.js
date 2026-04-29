@@ -1,11 +1,33 @@
 console.log("JS LOADED");
 
 document.addEventListener('DOMContentLoaded', function () {
-
+    
     const roleSelect = document.getElementById('role');
     const patientDiv = document.getElementById('patientFields');
     const doctorDiv = document.getElementById('doctorFields');
     const form = document.getElementById('registerForm');
+    
+    async function loadSpecializations() {
+    try {
+        const res = await fetch('http://127.0.0.1:8000/specializations/');
+        const data = await res.json();
+
+        const select = document.getElementById('specialization');
+
+        data.forEach(spec => {
+            const option = document.createElement('option');
+            option.value = spec.id; 
+            option.textContent = spec.type;
+            select.appendChild(option);
+        });
+
+    } catch (err) {
+        console.error("Failed to load specializations");
+    }
+}
+
+loadSpecializations();
+
 
     function showMessage(type, msg) {
     const el = document.getElementById("responseMessage");
@@ -44,13 +66,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         if (raw.role === 'DOCTOR') {
+            const select = document.getElementById("specialization");
+            const selected = Array.from(select.selectedOptions).map(o => o.value);
+            
             data = {
                 ...data,
                 name: raw.doctor_name,
                 years_of_experience: raw.experience,
                 gender: raw.doctor_gender,
                 phonenumber: raw.doctor_phone,
-                specialization: [parseInt(raw.specialization)] // important
+                specialization: selected 
             };
         } 
         else if (raw.role === 'PATIENT') {
