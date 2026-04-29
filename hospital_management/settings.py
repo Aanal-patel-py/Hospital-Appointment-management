@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'Appointments',
     'django_celery_beat',
     'corsheaders',
+    'frontend'
 ]
 
 MIDDLEWARE = [
