@@ -14,7 +14,13 @@ class MakeScheduleViewSet(ModelViewSet):
     permission_classes=[permissions.IsAuthenticated,IsDoctorUser]
     authentication_classes=[CookieJWTAuthentication]
     serializer_class=ScheduleSerializer
-    queryset=DoctorSchedule.objects.all()
+    def get_queryset(self):
+        user = self.request.user
+        try:
+            doctor = Doctor.objects.get(user=user)
+            return DoctorSchedule.objects.filter(doctor=doctor)
+        except Doctor.DoesNotExist:
+            return DoctorSchedule.objects.none()
 
     def perform_create(self, serializer): # NEEDS TO BE OVERWRIDDEN AS WE NEED TO GET THE DOCTOR OBJECT AND SAVE ITS INSTANCE
   
