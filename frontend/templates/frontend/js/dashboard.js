@@ -3,7 +3,7 @@ console.log("Dashboard loaded");
 const API = 'http://127.0.0.1:8000';
 let currentRole = null;
 
-// Run when page is ready
+
 document.addEventListener('DOMContentLoaded', function() {
     initDashboard();
 });
@@ -30,13 +30,13 @@ async function initDashboard() {
 }
 
 
-// ─── Fetch helper ────────────────────────────────────────────────────────────
+
 
 async function fetchJSON(url, options = {}) {
     const method = (options.method || 'GET').toUpperCase();
     const headers = { 'Content-Type': 'application/json' };
 
-    // CSRF token needed for any state-changing request
+
     const mutatingMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
     if (mutatingMethods.includes(method)) {
         const csrf = getCookie('csrftoken');
@@ -62,7 +62,7 @@ async function fetchJSON(url, options = {}) {
 }
 
 
-// ─── Utilities ───────────────────────────────────────────────────────────────
+
 
 function getCookie(name) {
     const value = '; ' + document.cookie;
@@ -81,7 +81,7 @@ function showMessage(type, msg) {
     `;
     area.classList.remove('d-none');
 
-    // Auto-close after 5 seconds
+  
     setTimeout(function() {
         const el = area.querySelector('.alert');
         if (el) bootstrap.Alert.getOrCreateInstance(el).close();
@@ -98,7 +98,7 @@ function setContent(html) {
     setLoading(false);
 }
 
-// Turn backend error objects into a readable string
+
 function formatErrors(data) {
     if (!data) return 'Something went wrong.';
     if (typeof data === 'string') return data;
@@ -117,7 +117,6 @@ function setActive(btn) {
 }
 
 
-// ─── Profile ─────────────────────────────────────────────────────────────────
 
 async function loadProfile(btn, preloaded) {
     setActive(btn);
@@ -169,7 +168,6 @@ async function loadProfile(btn, preloaded) {
 }
 
 
-// ─── Doctor: Add Schedule ─────────────────────────────────────────────────────
 
 function showScheduleForm(btn) {
     setActive(btn);
@@ -214,7 +212,6 @@ async function submitSchedule() {
     const endTime = document.getElementById('sf-end-time').value;
     const slotDuration = parseInt(document.getElementById('sf-slot-duration').value, 10);
 
-    // Basic validation
     if (!startDate || !endDate || !startTime || !endTime || !slotDuration) {
         showMessage('warning', 'Please fill in all fields.');
         return;
@@ -254,7 +251,6 @@ async function submitSchedule() {
 }
 
 
-// ─── Appointments ─────────────────────────────────────────────────────────────
 
 async function loadAppointments(btn) {
     setActive(btn);
@@ -293,7 +289,7 @@ function renderAppointments(list) {
         const date = appt.slot?.date || '—';
         const time = appt.slot ? `${appt.slot.start_time} – ${appt.slot.end_time}` : '—';
 
-        // Doctors can confirm or reject pending appointments
+     
         let actionButtons = '';
         if (isDoctor && appt.status === 'PENDING') {
             actionButtons = `
@@ -350,7 +346,6 @@ async function appointmentAction(id, action, successMsg, newStatus) {
         await fetchJSON(`${API}/appointments/${id}/${action}/`, { method: 'PATCH' });
         showMessage('success', successMsg);
 
-        // Update the row in place without reloading
         const row = document.getElementById('appt-row-' + id);
         if (row) {
             const badge = row.querySelector('.badge');
@@ -358,7 +353,6 @@ async function appointmentAction(id, action, successMsg, newStatus) {
                 badge.className = 'badge bg-' + (newStatus === 'CONFIRMED' ? 'success' : 'danger');
                 badge.textContent = newStatus;
             }
-            // Clear action buttons
             const lastCell = row.cells[row.cells.length - 1];
             if (lastCell) lastCell.innerHTML = '';
         }
@@ -370,7 +364,6 @@ async function appointmentAction(id, action, successMsg, newStatus) {
 }
 
 
-// ─── Patient: Book Appointment ────────────────────────────────────────────────
 
 async function loadDoctors(btn) {
     setActive(btn);
@@ -440,7 +433,6 @@ async function loadDoctorSlots(doctorId) {
             return;
         }
 
-        // Group slots by date so they're easier to browse
         const byDate = {};
         available.forEach(function(slot) {
             const date = slot.date || 'Unknown';
@@ -497,7 +489,6 @@ async function bookSlot(slotId) {
 }
 
 
-// ─── Logout ───────────────────────────────────────────────────────────────────
 
 async function logout() {
     try {
