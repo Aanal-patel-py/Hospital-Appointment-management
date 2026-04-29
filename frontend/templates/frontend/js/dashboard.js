@@ -125,33 +125,32 @@ async function loadProfile(btn, preloaded) {
     try {
         const p = preloaded || await fetchJSON(API + '/me/');
         const isDoctor = p.role === 'DOCTOR';
-        const prof = isDoctor ? (p.doctor_profile || {}) : (p.patient_profile || {});
+        
+        console.log(p)
 
         let rows = '';
 
         if (isDoctor) {
-            const specs = (prof.specialization || [])
-                .map(s => s.type || s)
-                .join(', ') || '—';
+            const specs = (p.specialization || []).join(', ') || '—';
 
             rows = `
-                <tr><td class="text-muted">Name</td><td>${prof.name || '—'}</td></tr>
-                <tr><td class="text-muted">Gender</td><td>${prof.gender || '—'}</td></tr>
-                <tr><td class="text-muted">Phone</td><td>${prof.phonenumber || '—'}</td></tr>
-                <tr><td class="text-muted">Experience</td><td>${prof.years_of_experience ?? '—'} yrs</td></tr>
-                <tr><td class="text-muted">Verified</td><td>${prof.is_verified ? 'Yes' : 'No'}</td></tr>
+                <tr><td class="text-muted">Name</td><td>${p.name || '—'}</td></tr>
+                <tr><td class="text-muted">Gender</td><td>${p.gender || '—'}</td></tr>
+                <tr><td class="text-muted">Phone</td><td>${p.phonenumber || '—'}</td></tr>
+                <tr><td class="text-muted">Experience</td><td>${p.years_of_experience ?? '—'} yrs</td></tr>
+                <tr><td class="text-muted">Verified</td><td>${p.is_verified ? 'Yes' : 'No'}</td></tr>
                 <tr><td class="text-muted">Specialization</td><td>${specs}</td></tr>
             `;
         } else {
             rows = `
-                <tr><td class="text-muted">Name</td><td>${prof.name || '—'}</td></tr>
-                <tr><td class="text-muted">Age</td><td>${prof.age || '—'}</td></tr>
-                <tr><td class="text-muted">Gender</td><td>${prof.gender || '—'}</td></tr>
-                <tr><td class="text-muted">Blood Group</td><td>${prof.bloodgroup || '—'}</td></tr>
-                <tr><td class="text-muted">Height</td><td>${prof.height || '—'} cm</td></tr>
-                <tr><td class="text-muted">Weight</td><td>${prof.weight || '—'} kg</td></tr>
-                <tr><td class="text-muted">City</td><td>${prof.city || '—'}</td></tr>
-                <tr><td class="text-muted">Phone</td><td>${prof.phonenumber || '—'}</td></tr>
+                <tr><td class="text-muted">Name</td><td>${p.name || '—'}</td></tr>
+                <tr><td class="text-muted">Age</td><td>${p.age || '—'}</td></tr>
+                <tr><td class="text-muted">Gender</td><td>${p.gender || '—'}</td></tr>
+                <tr><td class="text-muted">Blood Group</td><td>${p.bloodgroup || '—'}</td></tr>
+                <tr><td class="text-muted">Height</td><td>${p.height || '—'} cm</td></tr>
+                <tr><td class="text-muted">Weight</td><td>${p.weight || '—'} kg</td></tr>
+                <tr><td class="text-muted">City</td><td>${p.city || '—'}</td></tr>
+                <tr><td class="text-muted">Phone</td><td>${p.phonenumber || '—'}</td></tr>
             `;
         }
 
@@ -202,6 +201,66 @@ function showScheduleForm(btn) {
         </div>
     `);
 }
+ async function showSchedulePage(btn) {
+    setActive(btn);
+    setLoading(true);
+
+    try {
+        const schedules = await fetchJSON(API + '/doctor-schedule/');
+
+        let rows = '';
+
+        if (schedules.length) {
+            rows = schedules.map(function(s) {
+                return `
+                    <tr>
+                        <td>${s.start_date || '—'}</td>
+                        <td>${s.end_date || '—'}</td>
+                        <td>${s.start_time || '—'}</td>
+                        <td>${s.end_time || '—'}</td>
+                        <td>${s.slot_duration || '—'} mins</td>
+                    </tr>
+                `;
+            }).join('');
+        } else {
+            rows = `<tr><td colspan="5" class="text-muted text-center small">No schedules found.</td></tr>`;
+        }
+
+        setContent(`
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">My Schedule</h6>
+                <button class="btn btn-sm btn-primary" onclick="showScheduleForm(null)">
+                    + Add Schedule
+                </button>
+            </div>
+
+            <table class="table table-sm table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Slot Duration</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+        `);
+
+    }  
+     catch (err) {
+    setContent('');
+
+    const errorMsg =
+        err.data?.detail ||          
+        JSON.stringify(err.data) ||  
+        err.message || 
+        "Failed to load schedules.";
+
+    showMessage('danger', errorMsg);
+}
+}
 
 async function submitSchedule() {
     const btn = document.getElementById('schedule-submit-btn');
@@ -251,7 +310,6 @@ async function submitSchedule() {
 }
 
 
-
 async function loadAppointments(btn) {
     setActive(btn);
     setLoading(true);
@@ -259,6 +317,7 @@ async function loadAppointments(btn) {
     try {
         const list = await fetchJSON(API + '/appointments/');
         renderAppointments(list);
+        console.log(list)
     } catch (err) {
         setContent('');
         showMessage('danger', 'Failed to load appointments.');
@@ -284,10 +343,12 @@ function renderAppointments(list) {
     const rows = list.map(function(appt) {
         const color = statusColors[appt.status] || 'secondary';
         const personName = isDoctor
-            ? (appt.patient?.name || '—')
-            : (appt.doctor?.name || '—');
+            ? (appt.patient || '—')
+            : (appt.doctor|| '—');
+        console.log(personName)
         const date = appt.slot?.date || '—';
         const time = appt.slot ? `${appt.slot.start_time} – ${appt.slot.end_time}` : '—';
+        const feedback = appt.feedback || 'Not given yet';
 
      
         let actionButtons = '';
@@ -303,6 +364,7 @@ function renderAppointments(list) {
                 <td>${personName}</td>
                 <td>${date}</td>
                 <td>${time}</td>
+                <td>${feedback}</td>
                 <td><span class="badge bg-${color}">${appt.status}</span></td>
                 ${isDoctor ? `<td>${actionButtons}</td>` : ''}
             </tr>
@@ -317,6 +379,7 @@ function renderAppointments(list) {
                     <th>${isDoctor ? 'Patient' : 'Doctor'}</th>
                     <th>Date</th>
                     <th>Time</th>
+                    <th>Feedback</th>
                     <th>Status</th>
                     ${isDoctor ? '<th>Action</th>' : ''}
                 </tr>
@@ -371,13 +434,20 @@ async function loadDoctors(btn) {
 
     try {
         const doctors = await fetchJSON(API + '/doctor/list/');
+        const verifiedDoctors = doctors.filter(doc => doc.is_verified);
+        console.log(verifiedDoctors)
 
-        if (!doctors.length) {
+        if (!verifiedDoctors.length) {
+            setContent('<h6 class="mb-3">Book Appointment</h6><p class="text-muted small">No verified doctors available.</p>');
+            return;
+        }
+
+        if (!verifiedDoctors.length) {
             setContent('<h6 class="mb-3">Book Appointment</h6><p class="text-muted small">No doctors available.</p>');
             return;
         }
 
-        const rows = doctors.map(function(doc) {
+        const rows = verifiedDoctors.map(function(doc) {
             const specs = (doc.specialization || [])
                 .map(s => s.type || s)
                 .join(', ') || '—';
@@ -388,7 +458,8 @@ async function loadDoctors(btn) {
                     <td>${doc.name}</td>
                     <td>${specs}</td>
                     <td>${experience} yrs</td>
-                    <td>${doc.is_verified ? 'Verified' : '—'}</td>
+                    <td>${doc.phonenumber}</td>
+                    <td>${doc.is_verified ? 'Verified' : 'not verified'}</td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary" onclick="loadDoctorSlots(${doc.id})">
                             View Slots
@@ -406,6 +477,7 @@ async function loadDoctors(btn) {
                         <th>Name</th>
                         <th>Specialization</th>
                         <th>Experience</th>
+                        <th>phonenumber</th>
                         <th>Verified</th>
                         <th></th>
                     </tr>
@@ -493,7 +565,7 @@ async function bookSlot(slotId) {
 async function logout() {
     try {
         const csrf = getCookie('csrftoken');
-        await fetch(API + '/api/logout/', {
+        await fetch(API + '/api/token/blacklist/', {
             method: 'POST',
             credentials: 'include',
             headers: {

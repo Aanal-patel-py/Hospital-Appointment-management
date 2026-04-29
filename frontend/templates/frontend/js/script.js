@@ -75,6 +75,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const text = await response.text();
 
+            if(response.ok){
+                window.location.href = "login.html";
+            }
+
             let result;
             try {
                 result = JSON.parse(text);

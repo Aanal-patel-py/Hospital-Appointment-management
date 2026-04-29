@@ -4,6 +4,8 @@ from Users.models import Doctor,Patient
 
 User=get_user_model()
 class RegisterSerializer(serializers.ModelSerializer):
+    
+    
 
     class Meta:
         model=User
@@ -81,6 +83,7 @@ class PatientProfileSerializer(serializers.ModelSerializer):
         fields='__all__'
 
 class DoctorProfileSerializer(serializers.ModelSerializer):
+    specialization = serializers.StringRelatedField(many=True)
 
     class Meta:
         model=Doctor
