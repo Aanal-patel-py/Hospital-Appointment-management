@@ -1,3 +1,4 @@
+from urllib import request
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -5,6 +6,7 @@ from rest_framework import authentication, permissions
 from Users.serializer import RegisterSerializer,PatientProfileSerializer,DoctorProfileSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.conf import settings
+from Users.authentication import CookieJWTAuthentication
 
 class RegisterView(APIView):
     def post(self,request):
@@ -19,6 +21,7 @@ class RegisterView(APIView):
         
 class MeView(APIView):
     permission_classes=[permissions.IsAuthenticated]
+    authentication_classes=[CookieJWTAuthentication]
 
     def get(self,request):
         role=self.request.user.role
@@ -31,7 +34,9 @@ class MeView(APIView):
             serializer=DoctorProfileSerializer(user)
         else:
             return Response({"detail": "Invalid role"}, status=400)
-        return Response(serializer.data,status=200)
+        data=serializer.data
+        data["role"]=request.user.role
+        return Response(data,status=200)
     
 class CookieTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -46,7 +51,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 key='access_token', 
                 value=access_token,
                 httponly=True, 
-                secure=True, 
+                secure=False, 
                 samesite='Lax'
             )
           
@@ -54,7 +59,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 key='refresh_token', 
                 value=refresh_token,
                 httponly=True, 
-                secure=True,
+                secure=False,
                 samesite='Lax'
             )
             

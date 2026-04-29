@@ -8,9 +8,11 @@ from rest_framework.decorators import api_view
 from Users.models import Doctor
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsPatientUser
+from Users.authentication import CookieJWTAuthentication
 
 class SlotAPIView(ListAPIView):
     permission_classes=[IsAuthenticated,IsPatientUser]
+    authentication_classes=[CookieJWTAuthentication]
     queryset=slot_availability.objects.all()
     serializer_class=SlotAvailabilitySerializer
 

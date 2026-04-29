@@ -9,8 +9,10 @@ from Appointments.serializer import AppointmentSerializer
 from Doctor.permissions import IsDoctorUser
 from Appointments.models import AppointmentStatus
 # from .tasks import send_email_task
+from Users.authentication import CookieJWTAuthentication
 
 class BookSlotAPIView(APIView):
+    authentication_classes=[CookieJWTAuthentication]
 
     def get_permissions(self):
         if self.request.method == 'PATCH':
@@ -62,6 +64,7 @@ class BookSlotAPIView(APIView):
         
 class ConfirmAppointmentAPIView(APIView):
     permission_classes=[IsAuthenticated,IsDoctorUser]
+    authentication_classes=[CookieJWTAuthentication]
 
     def patch(self,request,appointment_id):
         doctor=request.user.doctor_profile
@@ -85,6 +88,7 @@ class ConfirmAppointmentAPIView(APIView):
     
 class RejectAppointmentAPIView(APIView):
     permission_classes=[IsAuthenticated,IsDoctorUser]
+    authentication_classes=[CookieJWTAuthentication]
 
     def patch(self,request,appointment_id):
         doctor=request.user.doctor_profile
