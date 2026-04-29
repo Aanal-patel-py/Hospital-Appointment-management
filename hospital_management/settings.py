@@ -54,11 +54,13 @@ INSTALLED_APPS = [
     'corsheaders',
     'frontend',
     'drf_yasg',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -101,7 +103,7 @@ DATABASES = {
     }
 }
 
-
+INTERNAL_IPS = ['127.0.0.1']
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -176,3 +178,4 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS=True
+

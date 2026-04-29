@@ -1,5 +1,5 @@
 
-
+import debug_toolbar
 from django.contrib import admin
 from django.urls import path,include
 from rest_framework_simplejwt.views import (
@@ -36,4 +36,5 @@ urlpatterns = [
     path('',include('Appointments.urls')),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0)),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
+    path('__debug__/', include(debug_toolbar.urls)),
     ]
