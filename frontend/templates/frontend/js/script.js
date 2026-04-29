@@ -7,6 +7,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const doctorDiv = document.getElementById('doctorFields');
     const form = document.getElementById('registerForm');
 
+    function showMessage(type, msg) {
+    const el = document.getElementById("responseMessage");
+    el.className = `text-${type} mt-3`;
+    el.innerText = msg;
+}
 
     roleSelect.addEventListener('change', function () {
 
@@ -64,32 +69,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
         console.log("FINAL PAYLOAD:", data);
 
-        try {
-            const response = await fetch('http://127.0.0.1:8000/register/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
+       try {
+    const response = await fetch('http://127.0.0.1:8000/register/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
 
-            const text = await response.text();
+    const result = await response.json(); 
+    if (response.ok) {
+        showMessage('success', "Registration successful! Redirecting...");
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 1000);
+    } else {
+ 
+        let errorMsg = "";
 
-            if(response.ok){
-                window.location.href = "login.html";
-            }
-
-            let result;
-            try {
-                result = JSON.parse(text);
-            } catch {
-                console.error("Non-JSON response:", text);
-                return;
-            }
-
-        } catch (error) {
-            console.error("FETCH ERROR:", error);
+        if (result.username) {
+            errorMsg = result.username[0];
+        } else if (result.email) {
+            errorMsg = result.email[0];
+        } else if (result.detail) {
+            errorMsg = result.detail;
+        } else {
+            errorMsg = Object.values(result).flat().join(", ");
         }
+
+        showMessage('danger', errorMsg);
+    }
+
+} catch (error) {
+    console.error("FETCH ERROR:", error);
+    showMessage('danger', "Something went wrong.");
+}
     });
 
 });
