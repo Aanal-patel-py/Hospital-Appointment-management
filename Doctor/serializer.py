@@ -3,14 +3,11 @@ from .models import DoctorSchedule,slot_availability
 from Doctor.models import Doctor
 from datetime import datetime,date
 from rest_framework.validators import UniqueTogetherValidator
-
 class ScheduleSerializer(serializers.ModelSerializer):
-  
     class Meta:
         model=DoctorSchedule
         exclude=['id','doctor']
         
-
     def validate(self,data):
         request_data=self.initial_data
         date_format='%Y-%m-%d'
@@ -19,9 +16,20 @@ class ScheduleSerializer(serializers.ModelSerializer):
         startdate=datetime.strptime(start_date,date_format)
         enddate=datetime.strptime(end_date,date_format)
         
-        doctor = Doctor.objects.get(
-        user=self.context["request"].user
-    )
+        doctor = Doctor.objects.get(user=self.context["request"].user)
+        
+        today = date.today()
+        if startdate.date() < today:
+            raise serializers.ValidationError("Start date cannot be in the past.")
+        if enddate.date() < today:
+            raise serializers.ValidationError("End date cannot be in the past.")
+
+        now = datetime.now().time()
+        start_time_str = request_data.get('start_time')   
+        start_time = datetime.strptime(start_time_str, '%H:%M').time() if start_time_str else None
+
+        if startdate.date() == today and start_time and start_time <= now:
+            raise serializers.ValidationError("Start time must be in the future for today's schedule.")
 
         if request_data.get('start_time')>request_data.get('end_time'):
             raise serializers.ValidationError("starttime should not be greater than endtime")
@@ -30,11 +38,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
         if (enddate-startdate).days >7:
             raise serializers.ValidationError("you can select the range of 7 days only")
         
-        overlap_exists = DoctorSchedule.objects.filter(
-            doctor=doctor,
-            start_date__lte=end_date,
-            end_date__gte=start_date
-        ).exists()
+        overlap_exists = DoctorSchedule.objects.filter(doctor=doctor,start_date__lte=end_date,end_date__gte=start_date).exists()
 
         if overlap_exists:
             raise serializers.ValidationError(
