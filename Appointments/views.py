@@ -39,7 +39,7 @@ class BookSlotAPIView(APIView):
 
         try:
             with transaction.atomic():
-                slot=slot_availability.objects.select_for_update().select_related("schedule","schedule__doctor").get(id=slot_id)
+                slot=slot_availability.objects.select_for_update().select_related("schedule","schedule__doctor","schedule__doctor_user").get(id=slot_id)
                 print(f"{slot_id}")
                 if slot.is_booked:
                     return Response({"error":"Slot already booked"},status=400)
@@ -51,9 +51,9 @@ class BookSlotAPIView(APIView):
                 date:{appointment.slot.date}, 
                 slot:{appointment.slot.start_time} to {appointment.slot.end_time} 
                 patient: {appointment.patient.name}"""
-                email=appointment.doctor.user.email
+                # email=appointment.doctor.user.email
 
-                # send_email_task.delay('Appointment request',message_body,[email])
+                # send_email_task.delay('Appointment request',message_body,[slot.email])
 
                 return Response({"message":"Appointment request has been sent to the doctor , please wait for confirmation email","appointment_id":appointment.id},status=201)
 
@@ -77,6 +77,7 @@ class ConfirmAppointmentAPIView(APIView):
         please be on time , Thankyou.
         """
         email=appointment.patient.user.email
+        #optimized:
         # send_email_task.delay('Appointment Confirmed',message_body,[email])
 
         return Response(
@@ -88,6 +89,8 @@ class RejectAppointmentAPIView(APIView):
 
     def patch(self,request,appointment_id):
         doctor=request.user.doctor_profile
+        # better query 
+        # appointment = Appointment.objects.select_related("patient","patient__user","slot").get(id=appointment_id,doctor=doctor)
 
         with transaction.atomic():
             appointment=Appointment.objects.select_for_update().get(id=appointment_id,doctor=doctor)
@@ -104,7 +107,7 @@ class RejectAppointmentAPIView(APIView):
             Slot:{appointment.slot.start_time} to {appointment.slot.end_time} 
             We apologize for inconvienence, please try to book another slot, Thankyou.
             """
-            email=appointment.patient.user.email
+            email=appointment.patient.user.email #there is more optimized query.
             # send_email_task.delay('Appointment Rejected',message_body,[email])
 
         return Response(
