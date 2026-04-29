@@ -3,10 +3,12 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
-from Users.serializer import RegisterSerializer,PatientProfileSerializer,DoctorProfileSerializer
+from Users.serializer import RegisterSerializer,PatientProfileSerializer,DoctorProfileSerializer,SpecializationSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.conf import settings
 from Users.authentication import CookieJWTAuthentication
+from rest_framework.generics import ListAPIView
+from .models import Specialization
 
 class RegisterView(APIView):
     def post(self,request):
@@ -66,3 +68,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
            
 
         return response
+
+class SpecializationListView(ListAPIView):
+    queryset = Specialization.objects.all()
+    serializer_class = SpecializationSerializer

@@ -49,6 +49,8 @@ class DoctorAdmin(admin.ModelAdmin):
 class PatientAdmin(admin.ModelAdmin):
     list_display=('name','age','bloodgroup','gender','phonenumber','height','weight','city')
     list_filter=('city','gender','age')
+
+
 @admin.register(Specialization)
 class SpecializationAdmin(admin.ModelAdmin):
-    list_display=('type',)
+    list_display = ('id', 'type')

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from Users.models import Doctor,Patient
+from Users.models import Doctor,Patient,Specialization
+
 
 User=get_user_model()
 class RegisterSerializer(serializers.ModelSerializer):
@@ -91,3 +92,9 @@ class DoctorProfileSerializer(serializers.ModelSerializer):
         extra_kwargs={
             'is_verified':{'read_only': True}
         }
+
+
+class SpecializationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Specialization
+        fields = ['id', 'type']

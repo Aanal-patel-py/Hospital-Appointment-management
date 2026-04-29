@@ -12,17 +12,12 @@ class User(AbstractUser):
 class Gender(models.TextChoices):
         MALE="MALE","Male"
         FEMALE="FEMALE","Female"
-class Specializations(models.TextChoices):
-        CARDIOLOGISTS="CARDIOLOGISTS","Cardiologists"
-        NEUROSURGEON="NEUROSURGEON","Neurosurgeon"
-        DENTIST="DENTIST","Dentist"
 
 class Specialization(models.Model):
-     
-    type=models.CharField(choices=Specializations.choices, unique=True,max_length=30)
+    type = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
-        return self.get_type_display()
+        return self.type
     
 class Doctor(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE, related_name='doctor_profile')
