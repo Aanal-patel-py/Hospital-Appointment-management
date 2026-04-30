@@ -3,6 +3,8 @@ from .serializer import SlotAvailabilitySerializer,DoctorListSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
+from datetime import datetime
+from django.db.models import Q
 from Doctor.models import slot_availability   
 from rest_framework.decorators import api_view
 from Users.models import Doctor
@@ -16,14 +18,12 @@ class SlotAPIView(ListAPIView):
     queryset=slot_availability.objects.all()
     serializer_class=SlotAvailabilitySerializer
 
-    def get_queryset(self):
-
-        doctor_id = self.kwargs["doctor_id"]
-        if doctor_id is not None:
-            queryset = slot_availability.objects.filter(schedule__doctor_id=doctor_id,is_booked=False).select_related("schedule","schedule__doctor").order_by('date','start_time')
-
+    def get_queryset(self): 
+        doctor_id = self.kwargs["doctor_id"] 
+        today = datetime.now().date() 
+        now_time = datetime.now().time() 
+        queryset = slot_availability.objects.filter( schedule__doctor_id=doctor_id, is_booked=False ).filter( Q(date__gt=today) | Q(date=today, start_time__gt=now_time) ).select_related( "schedule", "schedule__doctor" ).order_by('date', 'start_time') 
         return queryset
-
 
 class DoctorListAPIView(ListAPIView):
     model=Doctor
