@@ -123,7 +123,7 @@ async function loadProfile(btn, preloaded) {
     setLoading(true);
 
     try {
-        const p = preloaded || await fetchJSON(API + '/me/');
+        const p = preloaded || await fetchJSON(API + '/me/');   
         const isDoctor = p.role === 'DOCTOR';
         
         console.log(p)
@@ -608,7 +608,7 @@ async function logout() {
             }
         });
     } catch (e) {
-        // Logout failed silently — redirect anyway
+        // Logout failed silently still redirect anyway
     }
 
     window.location.href = 'login.html';
