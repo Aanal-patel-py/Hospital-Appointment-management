@@ -471,6 +471,17 @@ async function loadDoctors(btn) {
 
         setContent(`
             <h6 class="mb-3">Book Appointment – Select Doctor</h6>
+
+            <div class="mb-3" style="max-width:300px;">
+                <input 
+                    type="text" 
+                    id="doctor-search" 
+                    class="form-control form-control-sm"
+                    placeholder="Search doctor or specialization..."
+                    onkeyup="filterDoctors()"
+                >
+            </div>
+
             <table class="table table-sm table-bordered">
                 <thead class="table-light">
                     <tr>
@@ -482,15 +493,38 @@ async function loadDoctors(btn) {
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>${rows}</tbody>
+
+                <tbody id="doctor-table-body">
+                    ${rows}
+                </tbody>
             </table>
+
             <div id="slots-section"></div>
         `);
+
+
     } catch (err) {
         setContent('');
         showMessage('danger', 'Failed to load doctors.');
     }
 }
+
+function filterDoctors() {
+    const input = document.getElementById('doctor-search').value.toLowerCase();
+
+    const rows = document.querySelectorAll('#doctor-table-body tr');
+
+    rows.forEach(function(row) {
+        const text = row.innerText.toLowerCase();
+
+        if (text.includes(input)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
 
 async function loadDoctorSlots(doctorId) {
     const section = document.getElementById('slots-section');
