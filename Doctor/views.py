@@ -22,14 +22,12 @@ class MakeScheduleViewSet(ModelViewSet):
         except Doctor.DoesNotExist:
             return DoctorSchedule.objects.none()
 
-    def perform_create(self, serializer): # NEEDS TO BE OVERWRIDDEN AS WE NEED TO GET THE DOCTOR OBJECT AND SAVE ITS INSTANCE
-  
-        user = self.request.user
-        schedule = Doctor.objects.get(user=user)
-        serializer.save(doctor=schedule)
+    def perform_create(self, serializer): # NEEDS TO BE OVERWRITTEN AS WE NEED TO GET THE DOCTOR OBJECT AND SAVE ITS INSTANCE
 
-        # doc_id=self.request.data.get('doctor')
-        generate_slots_for_schedule(schedule)
+        user = self.request.user
+        doctor = Doctor.objects.get(user=user)
+        schedule = serializer.save(doctor=doctor)
+        generate_slots_for_schedule(schedule) 
         # print(user)
         # return Response(result)
 
