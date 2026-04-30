@@ -9,6 +9,8 @@ from django.conf import settings
 from Users.authentication import CookieJWTAuthentication
 from rest_framework.generics import ListAPIView
 from .models import Specialization
+from rest_framework import status
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class RegisterView(APIView):
     def post(self,request):
@@ -16,14 +18,14 @@ class RegisterView(APIView):
 
         if serializer.is_valid():  
             serializer.save()
-            return Response(serializer.data,status=200)
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors,status=400)
         
         
 class MeView(APIView):
     permission_classes=[permissions.IsAuthenticated]
-    authentication_classes=[CookieJWTAuthentication]
+    authentication_classes=[CookieJWTAuthentication,JWTAuthentication]
 
     def get(self,request):
         role=self.request.user.role

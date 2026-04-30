@@ -10,9 +10,10 @@ from Doctor.permissions import IsDoctorUser
 from Appointments.models import AppointmentStatus
 # from .tasks import send_email_task
 from Users.authentication import CookieJWTAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class BookSlotAPIView(APIView):
-    authentication_classes=[CookieJWTAuthentication]
+    authentication_classes=[CookieJWTAuthentication,JWTAuthentication]
 
     def get_permissions(self):
         if self.request.method == 'PATCH':
