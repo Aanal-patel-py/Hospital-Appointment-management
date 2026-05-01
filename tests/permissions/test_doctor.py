@@ -1,0 +1,108 @@
+import pytest
+import logging
+from rest_framework.test import APIClient
+from rest_framework import status
+from django.contrib.auth import get_user_model
+from Appointments.models import Appointment
+import logging
+logger = logging.getLogger(__name__)
+
+@pytest.mark.django_db
+def test_only_doctor_can_create_schedule_successfully(authenticated_doctor_client):
+    
+    payload={
+    "start_date": "2026-05-20",
+    "end_date": "2026-05-27",
+    "start_time": "10:00:00",
+    "end_time": "18:00:00",
+    "slot_duration": 30
+    }
+
+    response=authenticated_doctor_client.post('/doctor-schedule/',payload,format="json")
+    assert response.status_code==status.HTTP_201_CREATED
+
+
+def test_only_doctor_can_create_schedule_failed(authenticated_doctor_client):
+  
+    payload={
+    "start_date": "2026-05-20",
+    "end_date": "2026-05-27",
+    "start_time": "10:00:00",
+    "slot_duration": 30
+    }
+
+    response=authenticated_doctor_client.post('/doctor-schedule/',payload,format="json")
+    assert response.status_code==status.HTTP_400_BAD_REQUEST
+    assert response.data['end_time'][0]=='This field is required.'
+
+def test_start_date_lessthan_end_date_failed(authenticated_doctor_client):
+     
+    payload={
+    "start_date": "2026-05-20",
+    "end_date": "2026-04-27",
+    "start_time": "10:00:00",
+    "end_time": "18:00:00",
+    "slot_duration": 30
+    }
+
+    response=authenticated_doctor_client.post('/doctor-schedule/',payload,format="json")
+    assert response.status_code==status.HTTP_400_BAD_REQUEST
+    assert response.data['non_field_errors'][0]=='End date cannot be in the past.'
+
+def test_start_time_lessthan_end_time_failed(authenticated_doctor_client):
+     
+    payload={
+    "start_date": "2026-05-20",
+    "end_date": "2026-05-27",
+    "start_time": "18:00:00",
+    "end_time": "10:00:00",
+    "slot_duration": 30
+    }
+
+    response=authenticated_doctor_client.post('/doctor-schedule/',payload,format="json")
+    assert response.status_code==status.HTTP_400_BAD_REQUEST
+    assert response.data['non_field_errors'][0]=='starttime should not be greater than endtime'
+
+def test_only_doctor_can_confirm_appointment(appointment_booked, authenticated_doctor_client):
+    appointment_id=appointment_booked
+
+    response=authenticated_doctor_client.patch(f'/appointments/{appointment_id}/confirm/')
+
+    assert response.status_code==200
+    
+    confirmed=Appointment.objects.get(id=appointment_id).status
+    logger.info(f"{confirmed}")
+    assert confirmed=='CONFIRMED'
+
+
+def test_only_doctor_can_reject_appointment(appointment_booked,authenticated_doctor_client):
+    appointment_id=appointment_booked
+
+
+    response=authenticated_doctor_client.patch(f'/appointments/{appointment_id}/reject/')
+    rejected=Appointment.objects.get(id=appointment_id).status
+    logger.info(f"{rejected}")
+    assert rejected=='CONFIRMED'
+
+    assert response.status_code==200
+
+def test_doctor_can_see_own_appointments(authenticated_doctor_client):
+
+    response=authenticated_doctor_client.get('/appointments/')
+
+    assert response.status_code==200
+
+    logger.info(f"{response.data}")
+
+
+# def test_doctor_cannot_book_appointments(authenticated_doctor_client,schedule_made):
+#     slot_id=schedule_made
+
+#     response=authenticated_doctor_client.patch(f'/appointments/{slot_id}/book/')
+    
+
+#     logger.info(f" repsonse data {response.data}")
+ 
+
+
+    

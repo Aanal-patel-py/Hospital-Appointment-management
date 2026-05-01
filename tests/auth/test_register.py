@@ -31,7 +31,7 @@ def test_patient_user_can_register_successfully(api_client):
     response = api_client.post("/register/",payload,format="json")
 
     assert response.status_code == status.HTTP_201_CREATED
-    logger.info(f"{response.data}")
+    # logger.info(f"{response.data}")
     assert User.objects.filter(username='rahul').exists()
 
 
@@ -56,7 +56,7 @@ def test_doctor_user_can_register_successfully(api_client):
     assert Specialization.objects.create(type="CARDIOLOGISTS")
 
     assert response.status_code == status.HTTP_201_CREATED
-    logger.info(f"{response.data}")
+    # logger.info(f"{response.data}")
     assert User.objects.filter(username='rahul').exists()
 
     assert Doctor.objects.filter(name='Dr Rahul').exists()

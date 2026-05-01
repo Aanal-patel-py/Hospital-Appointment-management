@@ -38,7 +38,7 @@ def test_expired_token(api_client):
     api_client.credentials(HTTP_AUTHORIZATION='Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc3NDQ1MDc1LCJpYXQiOjE3Nzc0NDIwNzUsImp0aSI6IjQwMWI4OTIyOGY5YzQ5MzQ5MzljNWNiN2U0ZDE5YjQ3IiwidXNlcl9pZCI6IjQifQ.WmDm1zJLZs5YF2rPQNewy3R0WUYFEGcW5dG902waR2g')
     response=api_client.get('/me/')
     assert response.status_code==status.HTTP_401_UNAUTHORIZED
-    logger.info(f"{response.data}")
+    # logger.info(f"{response.data}")
     assert response.data['messages'][0]['message']=='Token is expired'
 
 @pytest.mark.django_db

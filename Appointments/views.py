@@ -65,7 +65,7 @@ class BookSlotAPIView(APIView):
         
 class ConfirmAppointmentAPIView(APIView):
     permission_classes=[IsAuthenticated,IsDoctorUser]
-    authentication_classes=[CookieJWTAuthentication]
+    authentication_classes=[CookieJWTAuthentication,JWTAuthentication]
 
     def patch(self,request,appointment_id):
         doctor=request.user.doctor_profile
@@ -89,7 +89,7 @@ class ConfirmAppointmentAPIView(APIView):
     
 class RejectAppointmentAPIView(APIView):
     permission_classes=[IsAuthenticated,IsDoctorUser]
-    authentication_classes=[CookieJWTAuthentication]
+    authentication_classes=[CookieJWTAuthentication,JWTAuthentication]
 
     def patch(self,request,appointment_id):
         doctor=request.user.doctor_profile
