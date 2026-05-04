@@ -89,6 +89,7 @@ def authenticated_patient_client(db,patient_payload):
     user_data=patient_payload
 
     client.post('/register/', user_data,format='json')
+    user = User.objects.get(username=user_data["username"])
 
     login_response = client.post('/api/login/', {
         "username": user_data["username"],
@@ -100,17 +101,10 @@ def authenticated_patient_client(db,patient_payload):
     token =login_response.data.get('access')
     client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
 
-    
-    return client
-
-# @pytest.fixture
-# def get_slot_id(db,authenticated_doctor_client):
-
-
-
-
-    
-
+    return  {
+    "client": client,
+    "user": user
+    }
 
 @pytest.fixture
 def schedule_made(db,authenticated_doctor_client):
@@ -133,10 +127,11 @@ def schedule_made(db,authenticated_doctor_client):
     
     return slot_id
 
-
+@pytest.fixture
 def appointment_booked(authenticated_patient_client,schedule_made):
     slot_id=schedule_made
-    response1=authenticated_patient_client.patch(f'/appointments/{slot_id}/book/')
+    client=authenticated_patient_client['client']
+    response1=client.patch(f'/appointments/{slot_id}/book/')
 
     logger.info(f" repsonse data {response1.data}")
     appointment_id=response1.data['appointment_id']
