@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 @pytest.mark.django_db
-def test_login_success(api_client,creds):
+def test_login_success(api_client):
 
     response=api_client.post('/api/login/',
     {'username' :'rahul',
@@ -18,7 +18,7 @@ def test_login_success(api_client,creds):
     assert "access" in response.data
 
 @pytest.mark.django_db
-def test_login_failure(api_client,creds):
+def test_login_failure(api_client):
 
     response=api_client.post('/api/login/',
         {'username' :'rhul',
@@ -47,3 +47,4 @@ def test_protected_endpoints(api_client):
     response=api_client.get('/me/')
     assert response.status_code==status.HTTP_401_UNAUTHORIZED
     assert response.data['detail']=='Authentication credentials were not provided.'
+    
