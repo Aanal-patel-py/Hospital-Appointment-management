@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from Appointments.serializer import AppointmentSerializer
 from Doctor.permissions import IsDoctorUser
 from Appointments.models import AppointmentStatus
-# from .tasks import send_email_task
+from .tasks import send_email_task
 from Users.authentication import CookieJWTAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -56,7 +56,7 @@ class BookSlotAPIView(APIView):
                 patient: {appointment.patient.name}"""
                 email=appointment.doctor.user.email
 
-                # send_email_task.delay('Appointment request',message_body,[email])
+                send_email_task.delay('Appointment request',message_body,[email])
 
                 return Response({"message":"Appointment request has been sent to the doctor , please wait for confirmation email","appointment_id":appointment.id},status=200)
 
@@ -81,7 +81,7 @@ class ConfirmAppointmentAPIView(APIView):
         please be on time , Thankyou.
         """
         email=appointment.patient.user.email
-        # send_email_task.delay('Appointment Confirmed',message_body,[email])
+        send_email_task.delay('Appointment Confirmed',message_body,[email])
 
         return Response(
             {"message":"Appointment confirmed"}
@@ -110,7 +110,7 @@ class RejectAppointmentAPIView(APIView):
             We apologize for inconvienence, please try to book another slot, Thankyou.
             """
             email=appointment.patient.user.email
-            # send_email_task.delay('Appointment Rejected',message_body,[email])
+            send_email_task.delay('Appointment Rejected',message_body,[email])
 
         return Response(
             {"message":"Appointment rejected"}
