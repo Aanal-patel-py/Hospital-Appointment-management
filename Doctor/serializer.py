@@ -6,7 +6,10 @@ from rest_framework.validators import UniqueTogetherValidator
 class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model=DoctorSchedule
-        exclude=['id','doctor']
+        exclude=['doctor']
+        extra_kwargs={
+            "id":{'read_only':True},
+        }
         
     def validate(self,data):
         request_data=self.initial_data
@@ -26,7 +29,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
 
         now = datetime.now().time()
         start_time_str = request_data.get('start_time')   
-        start_time = datetime.strptime(start_time_str, '%H:%M').time() if start_time_str else None
+        start_time = datetime.strptime(start_time_str, '%H:%M:%S').time() if start_time_str else None
 
         if startdate.date() == today and start_time and start_time <= now:
             raise serializers.ValidationError("Start time must be in the future for today's schedule.")

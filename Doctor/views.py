@@ -9,10 +9,12 @@ from rest_framework.decorators import api_view,action
 from .services.schedule_service import generate_slots_for_schedule
 from .permissions import IsDoctorUser
 from Users.authentication import CookieJWTAuthentication 
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import status
 
 class MakeScheduleViewSet(ModelViewSet):
     permission_classes=[permissions.IsAuthenticated,IsDoctorUser]
-    authentication_classes=[CookieJWTAuthentication]
+    authentication_classes=[CookieJWTAuthentication,JWTAuthentication]
     serializer_class=ScheduleSerializer
     def get_queryset(self):
         user = self.request.user
@@ -28,6 +30,7 @@ class MakeScheduleViewSet(ModelViewSet):
         doctor = Doctor.objects.get(user=user)
         schedule = serializer.save(doctor=doctor)
         generate_slots_for_schedule(schedule) 
+        return Response(schedule,status=status.HTTP_201_CREATED)
         # print(user)
         # return Response(result)
 
