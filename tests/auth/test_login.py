@@ -18,11 +18,20 @@ def test_login_success(api_client,creds):
     assert "access" in response.data
 
 @pytest.mark.django_db
-def test_login_failure(api_client,creds):
+def test_login_failure_wrong_username(api_client,creds):
 
     response=api_client.post('/api/login/',
         {'username' :'rhul',
         'password':'123456'})
+    
+    assert response.status_code == 401 
+@pytest.mark.django_db
+
+def test_login_failure_wrong_password(api_client,creds):
+
+    response=api_client.post('/api/login/',
+        {'username' :'rahul',
+        'password':'12456'})
     
     assert response.status_code == 401 
 

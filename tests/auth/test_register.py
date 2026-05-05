@@ -33,6 +33,9 @@ def test_patient_user_can_register_successfully(api_client):
     assert response.status_code == status.HTTP_201_CREATED
     # logger.info(f"{response.data}")
     assert User.objects.filter(username='rahul').exists()
+    user=User.objects.get(username='rahul')
+    assert user.role=='PATIENT'
+
 
 
 @pytest.mark.django_db
@@ -60,6 +63,8 @@ def test_doctor_user_can_register_successfully(api_client):
     assert User.objects.filter(username='rahul').exists()
 
     assert Doctor.objects.filter(name='Dr Rahul').exists()
+    user=User.objects.get(username='rahul')
+    assert user.role=='DOCTOR'
 
 
 
