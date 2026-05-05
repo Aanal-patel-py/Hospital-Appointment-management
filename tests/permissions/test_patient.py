@@ -20,7 +20,7 @@ def test_only_patient_can_book_appointments(authenticated_patient_client,schedul
     patient_id=Appointment.objects.get(id=appointment_id)
 
     assert response.status_code==status.HTTP_200_OK
-    assert user.id==patient_id.patient.id
+    assert user.id==patient_id.patient.user.id
     
 @pytest.mark.django_db
 def test_patient_can_see_own_appointments(authenticated_patient_client,appointment_booked):

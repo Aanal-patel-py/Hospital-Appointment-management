@@ -80,7 +80,7 @@ def authenticated_doctor_client(db,doctor_payload):
     client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
 
     
-    return client
+    return {'client':client,'user':user}
 
 @pytest.fixture
 def authenticated_patient_client(db,patient_payload):
@@ -108,6 +108,7 @@ def authenticated_patient_client(db,patient_payload):
 
 @pytest.fixture
 def schedule_made(db,authenticated_doctor_client):
+    client= authenticated_doctor_client['client']
 
     payload={
     "start_date": "2026-05-20",
@@ -117,7 +118,7 @@ def schedule_made(db,authenticated_doctor_client):
     "slot_duration": 30
     }
 
-    response=authenticated_doctor_client.post('/doctor-schedule/',payload,format="json")
+    response=client.post('/doctor-schedule/',payload,format="json")
     logger.info(f"{response.data}")
 
     

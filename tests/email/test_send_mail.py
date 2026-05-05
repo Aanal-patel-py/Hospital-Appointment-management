@@ -21,10 +21,11 @@ def test_email_triggerd_on_booking_appointment(mocker,authenticated_patient_clie
 #BUT FROM ABOVE COMMENT :but better to make different tests for different email logics
 
 def test_email_triggerd_on_confirming_appointment(mocker,authenticated_doctor_client,appointment_booked):
+    client= authenticated_doctor_client['client']
     
     mock_task = mocker.patch("Appointments.views.send_email_task.delay")
     appointment_id=appointment_booked
-    response=authenticated_doctor_client.patch(f'/appointments/{appointment_id}/confirm/')
+    response=client.patch(f'/appointments/{appointment_id}/confirm/')
 
     assert response.status_code==200
     assert response.status_code==status.HTTP_200_OK
@@ -33,10 +34,11 @@ def test_email_triggerd_on_confirming_appointment(mocker,authenticated_doctor_cl
     mock_task.assert_called_once()
 
 def test_email_triggerd_on_rejecting_appointment(mocker,authenticated_doctor_client,appointment_booked):
+    client= authenticated_doctor_client['client']
     
     mock_task = mocker.patch("Appointments.views.send_email_task.delay")
     appointment_id=appointment_booked
-    response=authenticated_doctor_client.patch(f'/appointments/{appointment_id}/confirm/')
+    response=client.patch(f'/appointments/{appointment_id}/confirm/')
 
     assert response.status_code==200
     assert response.status_code==status.HTTP_200_OK
@@ -53,14 +55,13 @@ def test_email_calling_send_mail(mocker):
 
     mock_send_mail.assert_called_once()
 
-# def test_email_on_doctor_verification(mocker,authenticated_doctor_client):
+# def test_email_on_doctor_verification(mocker,authenticated_doctor_client): #this does not run the actual code , as it is not this way trigeering the model_save method
 
 #     mock_task = mocker.patch("Users.admin.send_email_task.delay")
 
-    
-#     user = User.objects.get(username='[]')
+#     user=authenticated_doctor_client['user']
 #     user.doctor_profile.is_verified = True
-#     user.doctor_profile.save()
+#     user.doctor_profile.save() #bypasses admin logic completely
 
 #     mock_task.assert_called_once()
 

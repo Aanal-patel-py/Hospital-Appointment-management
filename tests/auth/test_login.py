@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 @pytest.mark.django_db
-def test_login_success(api_client):
+def test_login_success(api_client,creds):
 
     response=api_client.post('/api/login/',
     {'username' :'rahul',
@@ -18,7 +18,7 @@ def test_login_success(api_client):
     assert "access" in response.data
 
 @pytest.mark.django_db
-def test_login_failure(api_client):
+def test_login_failure(api_client,creds):
 
     response=api_client.post('/api/login/',
         {'username' :'rhul',
