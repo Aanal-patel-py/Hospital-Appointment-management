@@ -155,18 +155,3 @@ def appointment_booked(authenticated_patient_client,schedule_made):
     #     status="pending")
 
 
-    
-# @pytest.mark.django_db
-# @pytest.mark.parametrize("user_role, expected_status", [
-#     ("admin", 200),
-#     ("staff", 200),
-#     ("regular_user", 403),
-#     (None, 403), # Anonymous
-# ])
-# def test_endpoint_access_by_role(auth_client, user_factory, user_role, expected_status):
-#     # Logic to create user based on role or pass None for anonymous
-#     user = user_factory(role=user_role) if user_role else None
-#     client = auth_client(user=user)
-    
-#     response = client.get(reverse('your-endpoint'))
-    # assert response.status_code == expected_status

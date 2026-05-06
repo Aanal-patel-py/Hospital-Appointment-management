@@ -50,7 +50,6 @@ class CookieTokenObtainPairView(TokenObtainPairView):
             access_token = response.data.get('access')
             refresh_token = response.data.get('refresh')
 
-
             response.set_cookie(
                 key='access_token', 
                 value=access_token,
@@ -66,9 +65,6 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 secure=False,
                 samesite='Lax'
             )
-            
-           
-
         return response
 
 class SpecializationListView(ListAPIView):
